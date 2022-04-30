@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
-import data from './mainDataReducer'
+import defaultLink from './defaultLinkReducer'
 import currency from './currencyReducer'
 import cart from './cartReducer'
 export default combineReducers({
-  data,
+  defaultLink,
   currency,
   cart
 })

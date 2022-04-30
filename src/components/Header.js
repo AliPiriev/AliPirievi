@@ -6,20 +6,20 @@ import { NavLink } from 'react-router-dom'
 import Logo from '../assets/img/logo.png'
 
 class Header extends Component {
-    render() {        
+    render() {
         return (
             <header className='header'>
                 <div className="container">
                     <div className="header-inner">
-                        <Navigation/>
+                        <Navigation />
                         <div className="logo">
-                            <NavLink  to='/'>
+                            <NavLink to='/'>
                                 <img src={Logo} alt="logo" />
-                            </NavLink>     
+                            </NavLink>
                         </div>
                         <div className="right">
-                            <Currency/>
-                            <Cart/>
+                            <Currency />
+                            <Cart />
                         </div>
                     </div>
                 </div>

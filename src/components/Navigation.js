@@ -1,15 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
- 
-class Navigation extends Component {    
-    render() {       
-        const { categories } = this.props
+import {
+    ApolloClient,
+    InMemoryCache,
+    gql
+} from "@apollo/client";
+
+class Navigation extends Component {
+    state = {
+        categories: []
+    }
+
+    componentDidMount() {
+        const client = new ApolloClient({
+            uri: 'http://localhost:4000/',
+            cache: new InMemoryCache()
+        });
+        client.query({
+            query: gql`
+            query {
+                categories {
+                    name
+                }
+            }
+           `}).then(result => {
+                this.setState({ categories: result.data.categories })
+                this.props.setLink(result.data.categories[0].name)
+            });
+    }
+
+    render() {
+        const categories = this.state.categories;
         const linkList = categories.length ? (
             categories.map(cat => {
-              return (
-                <li key={cat.name}><NavLink  to={'/' + cat.name}>{cat.name}</NavLink></li>
-              )
+                return (
+                    <li key={cat.name}><NavLink to={'/' + cat.name}>{cat.name}</NavLink></li>
+                )
             })
         ) : '';
         return (
@@ -23,14 +50,15 @@ class Navigation extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        categories: state.data.categories
+        setLink: (link) => dispatch({ type: 'SET_DEFAULT_LINK', link })
     }
 }
 
 
-export default  connect(mapStateToProps)(Navigation)
+export default connect(null, mapDispatchToProps)(Navigation)
+
 
 
 

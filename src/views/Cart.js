@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import CartSmallItem from '../components/CartSmallItem';
+import SmallCartList from '../components/SmallCartList';
+import withRouter from '../hoc/withRouter';
 
 class Cart extends Component {
     state = {
@@ -16,41 +17,60 @@ class Cart extends Component {
     countTotal(products) {
         let result = 0;
         products.forEach(product => {
-            const { prices } = product;
-            const price = prices.find(price => price.currency.label === this.props.currency.label);
-            result = Math.round((result + price.amount) * 1e12) / 1e12;
+            const { _price } = product;
+            result = Math.round((result + (_price.amount * product.qnt)) * 100) / 100;
         })
         return result;
     }
+    calcCount = (products) => {
+        let count = 0;
+        products.forEach(product => {
+            count = count + product.qnt;
+        })
+        return count;
+    }
 
     checkout = () => {
-        const even = (element) => !element.selected_attr.length;
-        if (this.props.cart.some(even)) {
-            alert('Please select products attributes')
-        } else {
-            alert('You successfully made check out!')
-            console.log(this.props.cart)
-            console.log('currency: ', this.props.currency.label)
-        }
+        alert('You successfully made order!')
+        console.log('Products:')
+        console.log(this.props.cart)
+        console.log('currency: ', this.props.currency.label)
+        this.props.router.navigate('/');
+        this.props.clearCart();
     }
 
     render() {
         const products = this.props.cart;
-        const cartList = products.length ? (
-            products.map(product => {
-                return (
-                    <CartSmallItem product={product} currency={this.props.currency} key={product.id} type='normal'/>
-                )
-            })
-        ) : '';
+        const total = this.countTotal(products);
+        const count = this.calcCount(products);
+        const currency = this.props.currency;
 
         return (
             <div className="cart-page">
                 <div className="container">
-                    <h1 className="f-32 f-bold title">Cart</h1>
-                    <div className="list">
-                        {cartList}
-                    </div>
+                    {products.length ? (
+                        <>
+                            <h1 className="f-32 f-bold title">Cart</h1>
+                            <div className="list">
+                                <SmallCartList products={products} type='normal' />
+                            </div>
+                            <div className="bottom">
+                                <p>
+                                    <span className='f-24'>Qty:</span>
+                                    <span className='f-24 f-bold'>{count}</span>
+                                </p>
+                                <p>
+                                    <span className='f-24'>Total:</span>
+                                    <span className='f-24 f-bold'>{currency.symbol}{total}</span>
+                                </p>
+                                <button className='btn green-btn' onClick={this.checkout}>
+                                    <span>order</span>
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <span className='f-bold f-30'>Your cart is currently empty!</span>
+                    )}
                 </div>
             </div>
         );
@@ -58,9 +78,6 @@ class Cart extends Component {
     }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//     return ''
-// }
 
 
 const mapStateToProps = (state) => {
@@ -70,6 +87,11 @@ const mapStateToProps = (state) => {
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        clearCart: () => dispatch({ type: 'CLEAR_CART' })
+    }
+}
 
 
-export default connect(mapStateToProps)(Cart)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Cart))
