@@ -27,9 +27,20 @@ class Products extends Component {
 
     getData() {
         const id = this.props.router.params.cat_id;
+        const defaultOptions = {
+            watchQuery: {
+                fetchPolicy: 'no-cache',
+                errorPolicy: 'ignore',
+            },
+            query: {
+                fetchPolicy: 'no-cache',
+                errorPolicy: 'all',
+            },
+        }
         const client = new ApolloClient({
             uri: 'http://localhost:4000/',
-            cache: new InMemoryCache()
+            cache: new InMemoryCache(),
+            defaultOptions: defaultOptions,
         });
         const query = gql`
             query ($name: CategoryInput) {
