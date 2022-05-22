@@ -4,12 +4,8 @@ import { connect } from 'react-redux'
 import Gallery from '../components/Gallery';
 import Attributes from '../components/Attributes';
 import parse from 'html-react-parser';
-
-import {
-    ApolloClient,
-    InMemoryCache,
-    gql
-} from "@apollo/client";
+import {getProductQuery} from '../queries/queries'
+import AnimatedPage from '../components/AnimatedPage';
 
 class Product extends Component {
     state = {
@@ -18,52 +14,9 @@ class Product extends Component {
         loading: true
     }
 
-    componentDidMount() {
-        this.getData();
-    }
-
-    getData() {
-        const id = this.props.router.params.product_id;
-        const client = new ApolloClient({
-            uri: 'http://localhost:4000/',
-            cache: new InMemoryCache()
-        });
-        const query = gql`
-            query ($id: String!) {
-                product(id: $id){
-                    id
-                    name
-                    inStock
-                    gallery
-                    description
-                    category
-                    attributes{
-                        id
-                        name
-                        type
-                        items{
-                            displayValue
-                            value
-                            id
-                        }
-                    }
-                    prices{
-                        currency{
-                            label
-                            symbol
-                        }
-                        amount
-                    }
-                    brand
-                }
-            }
-        `;
-        client.query({
-            query: query,
-            variables: {
-                id
-            }
-        }).then(result => {
+    async componentDidMount() {
+        let result = await getProductQuery(this.props.router.params.product_id);
+        if(result){
             let product = null;
             if (result.data.product) {
                 const _price = this.props.currency ? result.data.product.prices.find(price => price.currency.label === this.props.currency.label) : result.data.product.prices[0];
@@ -71,6 +24,7 @@ class Product extends Component {
                     const parrent_id = attr.id;
                     const id = attr.items.find((item, index) => index === 0).id
                     return {
+                        unique: id + parrent_id,
                         parrent_id,
                         id
                     }
@@ -78,11 +32,8 @@ class Product extends Component {
                 product = { ...result.data.product, _price, selected_attr }
             }
             this.setState({ product, loading: result.loading })
-        }).catch(e => {
-            console.log(e)
-        });
+        }
     }
-
 
     setAttribute = (e, attributes) => {
         this.setState(prevState => ({
@@ -124,7 +75,7 @@ class Product extends Component {
                     setAttribute={this.setAttribute} />
                 <div className="price">
                     <span className='f-bold f-18'>price:</span>
-                    <span className='f-bold f-24'>{product._price.currency.label} {product._price.amount}</span>
+                    <span className='f-bold f-24'>{product._price.currency.label} {product._price.amount.toFixed(2)}</span>
                 </div>
                 {product.inStock ? (
                     <button className="f-semiBold green-btn" onClick={() => this.addToCart(product)}>
@@ -145,16 +96,18 @@ class Product extends Component {
         );
 
         return (
-            <div className="product-page" >
-                <div className="container">
-                    <div className="product-page-inner">
-                        {product ? (
-                            <Gallery slides={product.gallery} altText={product.name} />
-                        ) : ''}
-                        {productDetails}
+            <AnimatedPage>
+                <div className="product-page" >
+                    <div className="container">
+                        <div className="product-page-inner">
+                            {product ? (
+                                <Gallery slides={product.gallery} altText={product.name} />
+                            ) : ''}
+                            {productDetails}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </AnimatedPage>
         )
     }
 }

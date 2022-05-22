@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 
 
 class Attributes extends Component {
-    handleClick(e,parrent_id , id) {
+    handleClick(e, parrent_id, id) {
+        e.preventDefault();
         let attributes = this.props.product.selected_attr;
         const parent_index = attributes.findIndex(attribute => attribute.parrent_id === parrent_id);
         if (parent_index !== -1) {
             attributes = attributes.filter(attribute => attribute.parrent_id !== parrent_id);
         }
-        attributes = [...attributes, {id, parrent_id}];
+        attributes = [...attributes, { id, parrent_id, unique: id + parrent_id }];
         this.props.setAttribute(e, attributes, this.props.product.id)
     }
     render() {
@@ -17,13 +18,16 @@ class Attributes extends Component {
             attributes.map(attribute => {
                 return (
                     attribute.type === 'swatch' ? (
-                        <div  className={`attr color ${this.props.type}`} key={attribute.id}>
+                        <div className={`attr color ${this.props.type}`} key={attribute.id}>
                             <span className="f-bold f-18 attr-name">{attribute.name}:</span>
                             <div className="attr-list">
                                 {
                                     attribute.items.map(item => {
                                         return (
-                                            <div  className={`attr-item ${selected_attr.find(attr => attr.parrent_id  === attribute.id && attr.id === item.id ) ? "active" : ""}`}
+                                            <div
+                                                className={`attr-item 
+                                                ${selected_attr.find(attr => attr.parrent_id === attribute.id && attr.id === item.id) ? "active" : ""}
+                                                ${this.props.type === 'small' ? 'disabled' : ''}`}
                                                 onClick={(e) => this.handleClick(e, attribute.id, item.id)}
                                                 style={{ backgroundColor: item.value }} key={item.id}>
                                             </div>
@@ -33,15 +37,18 @@ class Attributes extends Component {
                             </div>
                         </div>
                     ) : (
-                        <div  className={`attr ${this.props.type}`} key={attribute.id}>
+                        <div className={`attr ${this.props.type}`} key={attribute.id}>
                             <span className="f-bold f-18 attr-name">{attribute.name}:</span>
                             <div className="attr-list">
                                 {
                                     attribute.items.map(item => {
                                         return (
-                                            <div  className={`attr-item ${selected_attr.find(attr => attr.parrent_id  === attribute.id && attr.id === item.id ) ? "active" : ""}`}
-                                            onClick={(e) => this.handleClick(e, attribute.id, item.id)}
-                                             key={item.id}>
+                                            <div
+                                                className={`attr-item 
+                                                ${selected_attr.find(attr => attr.parrent_id === attribute.id && attr.id === item.id) ? "active" : ""}
+                                                ${this.props.type === 'small' ? 'disabled' : ''}`}
+                                                onClick={(e) => this.handleClick(e, attribute.id, item.id)}
+                                                key={item.id}>
                                                 <span>{item.value}</span>
                                             </div>
                                         )

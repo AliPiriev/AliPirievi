@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import AnimatedPage from '../components/AnimatedPage';
 import SmallCartList from '../components/SmallCartList';
 import withRouter from '../hoc/withRouter';
 
@@ -29,6 +30,10 @@ class Cart extends Component {
         })
         return count;
     }
+    calcTax = (total) => {
+        let tax = Math.round((total * 0.21) * 100) / 100;
+        return tax;
+    }
 
     checkout = () => {
         alert('You successfully made order!')
@@ -43,36 +48,43 @@ class Cart extends Component {
         const products = this.props.cart;
         const total = this.countTotal(products);
         const count = this.calcCount(products);
+        const tax = this.calcTax(total);
         const currency = this.props.currency;
 
         return (
-            <div className="cart-page">
-                <div className="container">
-                    {products.length ? (
-                        <>
-                            <h1 className="f-32 f-bold title">Cart</h1>
-                            <div className="list">
-                                <SmallCartList products={products} type='normal' />
-                            </div>
-                            <div className="bottom">
-                                <p>
-                                    <span className='f-24'>Qty:</span>
-                                    <span className='f-24 f-bold'>{count}</span>
-                                </p>
-                                <p>
-                                    <span className='f-24'>Total:</span>
-                                    <span className='f-24 f-bold'>{currency.symbol}{total}</span>
-                                </p>
-                                <button className='btn green-btn' onClick={this.checkout}>
-                                    <span>order</span>
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <span className='f-bold f-30'>Your cart is currently empty!</span>
-                    )}
+            <AnimatedPage>
+                <div className="cart-page">
+                    <div className="container">
+                        {products.length ? (
+                            <>
+                                <h1 className="f-32 f-bold title">Cart</h1>
+                                <div className="list">
+                                    <SmallCartList products={products} type='normal' />
+                                </div>
+                                <div className="bottom">
+                                    <p>
+                                        <span className='f-24'>Tax 21%:</span>
+                                        <span className='f-24 f-bold'>{currency.symbol}{tax.toFixed(2)}</span>
+                                    </p>
+                                    <p>
+                                        <span className='f-24'>Quantity:</span>
+                                        <span className='f-24 f-bold'>{count}</span>
+                                    </p>
+                                    <p>
+                                        <span className='f-24'>Total:</span>
+                                        <span className='f-24 f-bold'>{currency.symbol}{total.toFixed(2)}</span>
+                                    </p>
+                                    <button className='btn green-btn' onClick={this.checkout}>
+                                        <span>order</span>
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <span className='f-bold f-30'>Your cart is currently empty!</span>
+                        )}
+                    </div>
                 </div>
-            </div>
+            </AnimatedPage>
         );
 
     }

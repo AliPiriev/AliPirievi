@@ -50,6 +50,10 @@ class Cart extends Component {
         })
         return count;
     }
+    calcTax = (total) => {
+        let tax = Math.round((total * 0.21) * 100) / 100;
+        return tax;
+    }
     navigateToCart = () => {
         this.props.router.navigate('/cart');
         this.closeModal();
@@ -77,6 +81,7 @@ class Cart extends Component {
         const currency = this.props.currency ? this.props.currency.label : '';
         const total = this.countTotal(products);
         const count = this.calcCount(products);
+        const tax = this.calcTax(total);
 
         return (
             <div className="cart-btn" ref={this.wrapperRef}>
@@ -102,9 +107,13 @@ class Cart extends Component {
                         <SmallCartList products={products} type='small' />
                     </div>
                     <div className="bottom">
+                        <div className='tax'>
+                            <span className='f-medium'>Tax 21%:</span>
+                            <span className='f-bold'>{currency} {tax.toFixed(2)}</span>
+                        </div>
                         <div className='total'>
                             <span className='f-medium'>Total</span>
-                            <span className='f-bold'>{currency} {total}</span>
+                            <span className='f-bold'>{currency} {total.toFixed(2)}</span>
                         </div>
 
                         <div className={`buttons ${!this.props.cart.length ? 'disable' : ''}`}>

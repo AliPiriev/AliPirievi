@@ -643,11 +643,14 @@ body.active .bg-layer {
     margin-top: 50px;
 }
 
-.cart-modal .bottom .total {
+.cart-modal .bottom .total,
+.cart-modal .bottom .tax {
     display: flex;
     justify-content: space-between;
 }
-
+.cart-modal .bottom .tax{
+    margin-bottom: 16px;
+}
 .cart-modal .bottom .buttons {
     display: flex;
     justify-content: space-between;
@@ -672,6 +675,10 @@ body.active .bg-layer {
 .products-page {
     padding-top: 80px;
     padding-bottom: 90px;
+}
+
+.products-page .container > .title{
+    text-transform: capitalize;
 }
 
 .products-page .product-list {
@@ -776,6 +783,9 @@ body.active .bg-layer {
     width: 80px;
     margin-right: 40px;
 }
+.gallery-thumbs-wrap.with-arrows{
+    padding-top: 40px;
+}
 
 .swiper.gallery-thumbs {
     flex: none;
@@ -863,15 +873,17 @@ body.active .bg-layer {
 }
 
 .gallery-thumbs-wrap .swiper-btn {
-    bottom: 0px;
+    left: calc(50% - 12px);
 }
 
 .gallery-thumbs-wrap .swiper-btn.prev {
-    right: calc(50% + 16px);
+    top: 0px;
+    transform: rotate(90deg);
 }
 
 .gallery-thumbs-wrap .swiper-btn.next {
-    left: calc(50% + 16px);
+    bottom: 0;
+    transform: rotate(90deg);
 }
 
 /* end of swiper */
@@ -924,6 +936,9 @@ body.active .bg-layer {
     padding: 0 2px;
     transition: .4s;
 }
+.attr-item.disabled{
+    pointer-events: none;
+}
 
 .attr-item span {
     color: #292929;
@@ -939,19 +954,19 @@ body.active .bg-layer {
     color: #A6A6A6;
 }
 
-.attr:not(color) .attr-item.active {
+.attr:not(.color) .attr-item.active {
     background-color: #292929;
 }
 
-.attr:not(color) .attr-item.active span {
+.attr:not(.color) .attr-item.active span {
     color: #fff;
 }
 
-.attr:not(color) .attr-item:hover {
+.attr:not(.color):not(.small) .attr-item:hover {
     background-color: #292929;
 }
 
-.attr:not(color) .attr-item:hover span {
+.attr:not(.color):not(.small)  .attr-item:hover span {
     color: #fff;
 }
 
@@ -975,7 +990,7 @@ body.active .bg-layer {
     box-shadow: 0px 0px 1px 1px rgba(94, 206, 123, 1);
 }
 
-.attr.color .attr-item:hover {
+.attr.color:not(.small) .attr-item:hover {
     -webkit-box-shadow: 0px 0px 1px 1px rgba(94, 206, 123, 1);
     -moz-box-shadow: 0px 0px 1px 1px rgba(94, 206, 123, 1);
     box-shadow: 0px 0px 1px 1px rgba(94, 206, 123, 1);

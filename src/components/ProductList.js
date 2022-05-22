@@ -9,6 +9,7 @@ class ProductList extends Component {
             const parrent_id = attr.id;
             const id = attr.items.find((item, index) => index === 0).id
             return {
+                unique: id + parrent_id,
                 parrent_id,
                 id
             }
@@ -40,8 +41,12 @@ class ProductList extends Component {
                         </button>
                     </div>
                     <div className="description">
-                        <h2 className="f-light f-18 ttl">{product.name}</h2>
-                        <span className="f-medium f-18 price">{product._price.currency.label} {product._price.amount}</span>
+                        <h2 className="f-light f-18 ttl">
+                            {product.brand }
+                            &nbsp;
+                            {product.name}
+                        </h2>
+                        <span className="f-medium f-18 price">{product._price.currency.label} {product._price.amount.toFixed(2)}</span>
                     </div>
                 </Link>
             )

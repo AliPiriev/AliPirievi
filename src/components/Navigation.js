@@ -1,33 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import {
-    ApolloClient,
-    InMemoryCache,
-    gql
-} from "@apollo/client";
+import {getCategoriesQuery} from '../queries/queries'
 
 class Navigation extends Component {
     state = {
         categories: []
     }
 
-    componentDidMount() {
-        const client = new ApolloClient({
-            uri: 'http://localhost:4000/',
-            cache: new InMemoryCache()
-        });
-        client.query({
-            query: gql`
-            query {
-                categories {
-                    name
-                }
-            }
-           `}).then(result => {
-                this.setState({ categories: result.data.categories })
-                this.props.setLink(result.data.categories[0].name)
-            });
+    async componentDidMount() {
+        let categories = await getCategoriesQuery();
+        if(categories){
+            this.setState({ categories })
+            this.props.setLink(categories[0].name)
+        }
     }
 
     render() {

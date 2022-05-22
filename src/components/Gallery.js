@@ -22,7 +22,7 @@ export default function Gallery(props) {
     })) : '';
     return (
         <div className="gallery-wrap">
-            <div className="gallery-thumbs-wrap">
+            <div  className={`gallery-thumbs-wrap ${slides.length > 3 ? 'with-arrows' : ''}`}>
                 <Swiper
                     onSwiper={setThumbsSwiper}
                     spaceBetween={34}

@@ -14,21 +14,21 @@ class SmallCartList extends Component {
     changeCount = (e, product, qnt) => {
         e.preventDefault();
         const count = product.qnt + qnt;
-        this.props.changeCount({ id: product.id, count })
+        this.props.changeCount({ product, count })
     }
 
 
     render() {
         const { products } = this.props;
         const cartItemList = products.length ? (
-            products.map(product => {
+            products.map((product, index) => {
                 const path = this.props.type === 'small' ? product.category + '/' + product.id : '/' + product.category + '/' + product.id;
                 return (
-                    <Link to={path} className="cart-product" key={product.id}>
+                    <Link to={path} className="cart-product" key={product.id + index}>
                         <div className="left">
                             <span className="brand f-light">{product.brand}</span>
                             <span className="name f-light">{product.name}</span>
-                            <span className='f-medium price'>{product._price.amount} {product._price.currency.label}</span>
+                            <span className='f-medium price'>{product._price.amount.toFixed(2)} {product._price.currency.label}</span>
                             <Attributes
                                 type={this.props.type}
                                 product={product}

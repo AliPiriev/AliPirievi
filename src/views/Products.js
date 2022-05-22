@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ProductList from '../components/ProductList';
 import withRouter from '../hoc/withRouter';
-import {
-    ApolloClient,
-    InMemoryCache,
-    gql
-} from "@apollo/client";
+import AnimatedPage from '../components/AnimatedPage';
+import {getProductsQuery} from '../queries/queries'
 
 class Products extends Component {
     state = {
@@ -25,66 +22,11 @@ class Products extends Component {
         }
     }
 
-    getData() {
-        const id = this.props.router.params.cat_id;
-        const defaultOptions = {
-            watchQuery: {
-                fetchPolicy: 'no-cache',
-                errorPolicy: 'ignore',
-            },
-            query: {
-                fetchPolicy: 'no-cache',
-                errorPolicy: 'all',
-            },
-        }
-        const client = new ApolloClient({
-            uri: 'http://localhost:4000/',
-            cache: new InMemoryCache(),
-            defaultOptions: defaultOptions,
-        });
-        const query = gql`
-            query ($name: CategoryInput) {
-                category(input: $name){
-                    name
-                    products {
-                        id
-                        name
-                        inStock
-                        gallery
-                        description
-                        category
-                        attributes{
-                           id
-                           name
-                           type
-                           items{
-                              displayValue
-                              value
-                              id
-                           }
-                        }
-                        prices{
-                           currency{
-                              label
-                              symbol
-                           }
-                           amount
-                        }
-                        brand
-                    }
-                }
-            }
-        `;
-        client.query({
-            query: query,
-            variables: {
-                name: { title: id }
-            }
-        }).then(result => {
+    async getData() {
+        let result = await getProductsQuery(this.props.router.params.cat_id);
+        if(result){
             result.data.category ? this.setState({ products: result.data.category.products, category: result.data.category.name, loading: result.loading }) : this.setState({ loading: result.loading });
-        }).catch(e => {
-            console.log(e)
-        });
+        }
     }
 
     render() {
@@ -95,14 +37,16 @@ class Products extends Component {
         }));
 
         return (
-            <div className="products-page">
-                <div className="container">
-                    <h1 className='f-42 title'>{this.state.category}</h1>
-                    <div className="product-list">
-                        <ProductList products={products} loading={this.state.loading} />
+            <AnimatedPage>
+                <div className="products-page">
+                    <div className="container">
+                        <h1 className='f-42 title'>{this.state.category}</h1>
+                        <div className="product-list">
+                            <ProductList products={products} loading={this.state.loading} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </AnimatedPage>
         )
     }
 }
