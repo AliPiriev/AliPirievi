@@ -1,6 +1,6 @@
 const initState = {
     cart: [],
-    modalState: true
+    modalState: false
 }
 
 
@@ -15,13 +15,21 @@ const cartReducer = (state = initState, action) => {
         a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
 
 
-    if (action.type === 'TOGGLE_STATE') {
-        const newState = !state.modalState;
+    if (action.type === 'TOGGLE_CART') {
         return {
             ...state,
-            modalState: newState,
+            modalState: !state.modalState,
         }
     }
+
+    if (action.type === 'CLOSE_CART') {
+        return {
+            ...state,
+            modalState: false,
+        }
+    }
+
+    
 
     if (action.type === 'CLEAR_CART') {
         return {
@@ -38,6 +46,7 @@ const cartReducer = (state = initState, action) => {
                 && isAttrEqual(product.selected_attr, action.product.selected_attr)) {
                 return product;
             }
+            return false
         });
 
 
@@ -81,6 +90,8 @@ const cartReducer = (state = initState, action) => {
                     return product;
                 }else if(product.id === action.payload.product.id && !isAttrEqual(product.selected_attr, action.payload.product.selected_attr)){
                     return product
+                }else{
+                    return false
                 }
             })
         }

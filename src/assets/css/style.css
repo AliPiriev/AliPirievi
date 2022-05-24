@@ -519,7 +519,7 @@ img {
     transition: .4s;
 }
 
-body.active .bg-layer {
+.bg-layer.active {
     opacity: 1;
     pointer-events: all;
 }

@@ -42,7 +42,7 @@ class ProductList extends Component {
                     </div>
                     <div className="description">
                         <h2 className="f-light f-18 ttl">
-                            {product.brand }
+                            {product.brand}
                             &nbsp;
                             {product.name}
                         </h2>

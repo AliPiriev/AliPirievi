@@ -15,7 +15,7 @@ class App extends Component {
                {this.props.defaultLink && this.props.currency ? (
                   <>
                      <div className="wrapper">
-                        <div className="bg-layer"></div>
+                        <div  className={`bg-layer ${this.props.cartState ? 'active' : ''}`}></div>
                         <AnimatedRoutes />
                      </div>
                   </>
@@ -34,7 +34,8 @@ class App extends Component {
 const mapStateToProps = (state) => {
    return {
       defaultLink: state.defaultLink.defaultLink,
-      currency: state.currency.current_currency
+      currency: state.currency.current_currency,
+      cartState: state.cart.modalState
    }
 }
 

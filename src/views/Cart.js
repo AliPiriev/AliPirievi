@@ -13,7 +13,6 @@ class Cart extends Component {
         this.setState({
             active: !this.state.active
         })
-        document.querySelector('body').classList.toggle('active');
     }
     countTotal(products) {
         let result = 0;

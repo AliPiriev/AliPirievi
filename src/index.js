@@ -14,8 +14,6 @@ const store = createStore(reducer, composeWithDevTools());
 
 
 
-
-
 ReactDOM.render(
    <Provider store={store}>
       <App />
